@@ -18,20 +18,33 @@ const client = new MongoClient(uri, {
 });
 async function run() {
   try {
-    const serviceCollection = client
-      .db("RainbowPhotography")
-      .collection("services");
+    const Service = client.db("RainbowPhotography").collection("services");
+    const Review = client.db("RainbowPhotography").collection("reviews");
+    const Gallery = client.db("RainbowPhotography").collection("gallery");
+
+    app.get("/gallery", async (req, res) => {
+      const cursor = Gallery.find({});
+      const gallery = await cursor.toArray();
+      res.send(gallery);
+    });
+
+    //Service post api
+    app.post("/services", async (req, res) => {
+      const service = req.body;
+      const result = await Service.insertOne(service);
+      res.send(result);
+    });
 
     // 3 Services api for home
     app.get("/homepageServices", async (req, res) => {
-      const cursor = serviceCollection.find({});
+      const cursor = Service.find({});
       const services = await cursor.limit(3).toArray();
       res.send(services);
     });
 
     // All Services api
     app.get("/services", async (req, res) => {
-      const cursor = serviceCollection.find({});
+      const cursor = Service.find({});
       const services = await cursor.toArray();
       res.send(services);
     });
@@ -40,9 +53,38 @@ async function run() {
     app.get("/services/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
-      const service = await serviceCollection.findOne(query);
+      const service = await Service.findOne(query);
       res.send(service);
     });
+
+    // Review data post
+    app.post("/reviews", async (req, res) => {
+      const review = req.body;
+      const result = await Review.insertOne(review);
+      res.send(result);
+    });
+
+    // Review  data get api
+    app.get("/reviews", async (req, res) => {
+      let query = {};
+      if (req.query.email) {
+        query = { email: req.query.email };
+      }
+      const cursor = Review.find(query);
+      const reviews = await cursor.toArray();
+      res.send(reviews);
+    });
+
+    //Update Review
+
+    // Delete Review:
+    app.delete("/reviews/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await Review.deleteOne(query);
+      res.send(result);
+    });
+    //
   } catch (error) {
     console.error(error.message);
   }
