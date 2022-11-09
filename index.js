@@ -70,7 +70,7 @@ async function run() {
       if (req.query.email) {
         query = { email: req.query.email };
       }
-      const cursor = Review.find(query);
+      const cursor = Review.find(query).sort({ time: -1 });
       const reviews = await cursor.toArray();
       res.send(reviews);
     });
