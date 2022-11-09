@@ -64,7 +64,7 @@ async function run() {
       res.send(result);
     });
 
-    // Review  data get api
+    // Reviews  data get api
     app.get("/reviews", async (req, res) => {
       let query = {};
       if (req.query.email) {
@@ -73,6 +73,14 @@ async function run() {
       const cursor = Review.find(query).sort({ time: -1 });
       const reviews = await cursor.toArray();
       res.send(reviews);
+    });
+
+    // Review data get
+    app.get("/reviews/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const review = await Review.findOne(query);
+      res.send(review);
     });
 
     //Update Review
