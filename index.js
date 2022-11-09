@@ -94,6 +94,8 @@ async function run() {
         $set: {
           message: updateReview.message,
           rating: updateReview.rating,
+          date: updateReview.date,
+          time: updateReview.time,
         },
       };
 
