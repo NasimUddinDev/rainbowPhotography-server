@@ -38,7 +38,8 @@ async function run() {
     // 3 Services api for home
     app.get("/homepageServices", async (req, res) => {
       const cursor = Service.find({});
-      const services = await cursor.limit(3).toArray();
+      // const services = await cursor.limit(3).toArray();
+      const services = (await cursor.toArray()).slice(-3).reverse();
       res.send(services);
     });
 
